@@ -20,7 +20,7 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: deploy  # This branch will be created automatically
-          publish_dir: ./         # Root directory (adjust if files are inside a subfolder)
-          destination_dir: ${{ github.ref_name }}  # Puts files in /main/, /v1.1/, etc.
-          keep_files: true  # Keeps existing versions in the deploy branch
+          publish_branch: deploy  # Creates or updates the deploy branch
+          publish_dir: ./         # Assumes your index.html is at the root
+          destination_dir: ${{ github.ref_name }}  # e.g. /v1.1, /v1.2
+          keep_files: true        # Keeps other folders like main, v1.2 etc.
