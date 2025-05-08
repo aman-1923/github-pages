@@ -44,9 +44,9 @@ jobs:
           # Copy the necessary files while avoiding symlinks
           rsync -av --no-links --exclude='.git' --exclude='.github' --exclude='deploy' ./ "deploy/${{ env.BRANCH_NAME }}/"
 
-      # Upload artifact for deployment
+      # Upload artifact for deployment (using v2)
       - name: Upload artifact for Pages deployment
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v2
         with:
           name: github-pages
           path: deploy/${{ env.BRANCH_NAME }}
