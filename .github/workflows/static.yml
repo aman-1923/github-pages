@@ -41,8 +41,14 @@ jobs:
           # Create the versioned folder to deploy
           mkdir -p "deploy/${{ env.BRANCH_NAME }}"
           
-          # Copy the necessary files while avoiding symlinks
+          # Copy the necessary files while avoiding symlinks and hard links
           rsync -av --no-links --exclude='.git' --exclude='.github' --exclude='deploy' ./ "deploy/${{ env.BRANCH_NAME }}/"
+          
+          # Check for any symlinks in the folder
+          if find deploy/${{ env.BRANCH_NAME }}/ -type l | grep -q .; then
+            echo "ERROR: Symlinks found in the deploy directory!"
+            exit 1
+          fi
 
       # Upload artifact for deployment (using v2)
       - name: Upload artifact for Pages deployment
