@@ -1,0 +1,26 @@
+name: Deploy Static HTML Version
+
+on:
+  push:
+    branches:
+      - main
+      - v1.1
+      - v1.2
+      - v1.3
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: deploy  # Creates or updates the deploy branch
+          publish_dir: ./         # Assumes your index.html is at the root
+          destination_dir: ${{ github.ref_name }}  # e.g. /v1.1, /v1.2
+          keep_files: true        # Keeps other folders like main, v1.2 etc.
