@@ -21,10 +21,10 @@
   <div class="version-switcher">
   <label for="version-select">Version:</label>
   <select id="version-select" onchange="location = this.value;">
-    <option value="https://aman-1923.github.io/github-pages/">Main</option>
-    <option value="https://aman-1923.github.io/github-pages-v1.1/">v1.1</option>
-    <option value="https://aman-1923.github.io/github-pages-v1.2/">v1.2</option>
-    <option value="https://aman-1923.github.io/github-pages-v1.3/">v1.3</option>
+    <option value="https://aman-1923.github.io/github-pages/main/">Main</option>
+    <option value="https://aman-1923.github.io/github-pages/v1.1/">v1.1</option>
+    <option value="https://aman-1923.github.io/github-pages/v1.2/">v1.2</option>
+    <option value="https://aman-1923.github.io/github-pages/v1.3/">v1.3</option>
   </select>
 </div>
 
@@ -57,10 +57,10 @@
   const select = document.getElementById('version-select');
   const hostname = window.location.href;
 
-  if (hostname.includes("github-pages-v1.1")) select.value = "https://aman-1923.github.io/github-pages-v1.1/";
-  else if (hostname.includes("github-pages-v1.2")) select.value = "https://aman-1923.github.io/github-pages-v1.2/";
-  else if (hostname.includes("github-pages-v1.3")) select.value = "https://aman-1923.github.io/github-pages-v1.3/";
-  else select.value = "https://aman-1923.github.io/github-pages/";
+  if (hostname.includes("github-pages/v1.1")) select.value = "https://aman-1923.github.io/github-pages/v1.1/";
+  else if (hostname.includes("github-pages/v1.2")) select.value = "https://aman-1923.github.io/github-pages/v1.2/";
+  else if (hostname.includes("github-pages/v1.3")) select.value = "https://aman-1923.github.io/github-pages/v1.3/";
+  else select.value = "https://aman-1923.github.io/github-pages/main/";
 </script>
 
 </body>
