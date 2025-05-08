@@ -31,12 +31,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Step 2: Prepare versioned folder for the current branch (main, v1.1, etc.)
+      # Step 2: Prepare the versioned folder for the current branch (main, v1.1, etc.)
       - name: Prepare versioned folder
         run: |
+          # Get the current branch name (e.g., main, v1.1, v1.2)
           BRANCH_NAME=$(echo "${GITHUB_REF#refs/heads/}" | tr / -)
+          
+          # Create the deploy folder for the current branch
           mkdir -p "deploy/$BRANCH_NAME"
-          rsync -av --exclude='deploy' --exclude='.git' --exclude='.github' ./ "deploy/$BRANCH_NAME/"
+          
+          # Copy the required files to the deploy folder while excluding unnecessary files
+          rsync -av --exclude='deploy' --exclude='.git' --exclude='.github' --exclude='*.log' --exclude='*.tmp' ./ "deploy/$BRANCH_NAME/"
 
       # Step 3: Upload the folder as an artifact
       - name: Upload versioned folder as artifact
