@@ -38,24 +38,9 @@ jobs:
           mkdir -p "deploy/$BRANCH_NAME"
           rsync -av --exclude='deploy' --exclude='.git' --exclude='.github' ./ "deploy/$BRANCH_NAME/"
 
-      # Step 3: Checkout the gh-pages branch to add the new version folder
-      - name: Checkout gh-pages branch
-        uses: actions/checkout@v4
-        with:
-          ref: gh-pages
-
-      # Step 4: Copy version folder contents into gh-pages
-      - name: Copy version folder to gh-pages
-        run: |
-          BRANCH_NAME=$(echo "${GITHUB_REF#refs/heads/}" | tr / -)
-          rsync -av --exclude='.git' --exclude='.github' "deploy/$BRANCH_NAME/" ./ 
-          git add .
-          git commit -m "Deploy $BRANCH_NAME to gh-pages"
-          git push origin gh-pages
-
-      # Step 5: Deploy to GitHub Pages
+      # Step 3: Setup GitHub Pages using the specific folder for the branch
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
         with:
-          branch: gh-pages
-          folder: ./
+          branch: ${{ github.ref_name }}  # Deploy from the current branch
+          folder: "deploy/${{ github.ref_name }}"  # Use the specific folder for each version
