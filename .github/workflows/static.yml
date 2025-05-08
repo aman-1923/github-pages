@@ -27,28 +27,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout the code of the current branch
+      # Step 1: Checkout the code of the current branch (main, v1.1, v1.2, etc.)
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Step 2: Setup GitHub Pages
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-
-      # Step 3: Prepare versioned folder (based on branch name)
+      # Step 2: Prepare versioned folder for the current branch (main, v1.1, etc.)
       - name: Prepare versioned folder
         run: |
           BRANCH_NAME=$(echo "${GITHUB_REF#refs/heads/}" | tr / -)
           mkdir -p "deploy/$BRANCH_NAME"
           rsync -av --exclude='deploy' --exclude='.git' --exclude='.github' ./ "deploy/$BRANCH_NAME/"
 
-      # Step 4: Checkout the gh-pages branch (ensure it's up-to-date)
+      # Step 3: Checkout the gh-pages branch to add the new version folder
       - name: Checkout gh-pages branch
         uses: actions/checkout@v4
         with:
           ref: gh-pages
 
-      # Step 5: Copy new branch contents into gh-pages
+      # Step 4: Copy version folder contents into gh-pages
       - name: Copy version folder to gh-pages
         run: |
           BRANCH_NAME=$(echo "${GITHUB_REF#refs/heads/}" | tr / -)
@@ -57,7 +53,9 @@ jobs:
           git commit -m "Deploy $BRANCH_NAME to gh-pages"
           git push origin gh-pages
 
-      # Step 6: Deploy to GitHub Pages
+      # Step 5: Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
-        id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          branch: gh-pages
+          folder: ./
