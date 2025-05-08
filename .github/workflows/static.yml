@@ -25,33 +25,40 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-
     steps:
-      # Step 1: Checkout the code of the current branch (main, v1.1, v1.2, etc.)
+      # Checkout the code
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Step 2: Prepare the versioned folder for the current branch (main, v1.1, etc.)
+      # Get the current branch name (e.g., main, v1.1, v1.2)
+      - name: Set Branch Name
+        id: branch_name
+        run: echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/} | tr / -)" >> $GITHUB_ENV
+
+      # Create the deploy folder for the current branch
       - name: Prepare versioned folder
         run: |
-          # Get the current branch name (e.g., main, v1.1, v1.2)
-          BRANCH_NAME=$(echo "${GITHUB_REF#refs/heads/}" | tr / -)
+          # Create the versioned folder to deploy
+          mkdir -p "deploy/${{ env.BRANCH_NAME }}"
           
-          # Create the deploy folder for the current branch
-          mkdir -p "deploy/$BRANCH_NAME"
-          
-          # Copy the required files to the deploy folder while excluding unnecessary files
-          rsync -av --exclude='deploy' --exclude='.git' --exclude='.github' --exclude='*.log' --exclude='*.tmp' ./ "deploy/$BRANCH_NAME/"
+          # Copy the necessary files while avoiding symlinks
+          rsync -av --no-links --exclude='.git' --exclude='.github' --exclude='deploy' ./ "deploy/${{ env.BRANCH_NAME }}/"
 
-      # Step 3: Upload the folder as an artifact
-      - name: Upload versioned folder as artifact
-        uses: actions/upload-artifact@v4
+      # Upload artifact for deployment
+      - name: Upload artifact for Pages deployment
+        uses: actions/upload-artifact@v3
         with:
           name: github-pages
-          path: deploy/
+          path: deploy/${{ env.BRANCH_NAME }}
 
-      # Step 4: Deploy to GitHub Pages (This step needs the uploaded artifact)
+      # Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
+        id: deployment
         uses: actions/deploy-pages@v4
         with:
+          artifact_name: github-pages
           token: ${{ secrets.GITHUB_TOKEN }}
+          timeout: 600000
+          error_count: 10
+          reporting_interval: 5000
+          preview: false
